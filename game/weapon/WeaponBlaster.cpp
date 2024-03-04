@@ -8,7 +8,6 @@
 #include "../gamesys/SysCmds.h"
 #include "../spawner.h"
 #include "../vehicle/Vehicle.h"
-#include "../spawner.h"
 
 #define BLASTER_SPARM_CHARGEGLOW		6
 
@@ -25,7 +24,7 @@ public:
 	void				PreSave		( void );
 	void				PostSave	( void );
 
-	//New Locate command
+	//New Turret command
 	void				Spawn_Turret		( void );
 
 protected:
@@ -56,6 +55,12 @@ private:
 CLASS_DECLARATION( rvWeapon, rvWeaponBlaster )
 END_CLASS
 
+
+/*
+================
+Special Spawn Command
+================
+*/
 void Spawn_f(const idCmdArgs& args) {
 #ifndef _MPBETA
 	const char* key, * value;
@@ -126,7 +131,11 @@ bool rvWeaponBlaster::UpdateFlashlight ( void ) {
 	return true;		
 }
 
-
+/*
+================
+rvWeaponBlaster::Spawn_Turret
+================
+*/
 void rvWeaponBlaster::Spawn_Turret ( void ) {
 	idCmdArgs args;
 

@@ -148,6 +148,7 @@ void rvVehicleWalker::UpdateState ( void ) {
 rvVehicleWalker::SetInput
 ================
 */
+
 void rvVehicleWalker::SetInput ( int position, const usercmd_t& cmd, const idAngles& newAngles ) {
 	usercmd_t* pcmd = const_cast<usercmd_t*>( &cmd );
 	pcmd->rightmove *= -1;

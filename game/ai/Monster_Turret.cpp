@@ -4,6 +4,14 @@
 
 #include "../Game_local.h"
 
+#include "../ai/AI.h"
+#include "../ai/AI_Manager.h"
+#include "../ai/AI_Util.h"
+#include "../Projectile.h"
+#include "../spawner.h"
+#include "../ai/AI_Tactical.h"
+#include "../Player.h"
+
 class rvMonsterTurret : public idAI {
 public:
 
@@ -15,6 +23,10 @@ public:
 	void				Spawn					( void );
 	void				Save					( idSaveGame *savefile ) const;
 	void				Restore					( idRestoreGame *savefile );
+
+	// New interact function
+	bool				CanDoUpgrades			( bool upgrade);
+	//void				Open_Upgrade_UI			( void );
 
 	virtual bool		Pain					( idEntity *inflictor, idEntity *attacker, int damage, const idVec3 &dir, int location );
 
@@ -29,6 +41,7 @@ protected:
 	int					maxShots;	
 	int					minShots;
 	int					shots;
+	bool				upgrade;
 
 private:
 
@@ -55,6 +68,11 @@ void rvMonsterTurret::InitSpawnArgsVariables ( void ) {
 	maxShots	= spawnArgs.GetInt ( "maxShots", "1" );
 	minShots	= spawnArgs.GetInt ( "minShots", "1" );
 }
+
+bool rvMonsterTurret::CanDoUpgrades ( bool upgrade ) {
+	return upgrade;
+}
+
 /*
 ================
 rvMonsterTurret::Spawn
@@ -68,6 +86,8 @@ void rvMonsterTurret::Spawn ( void ) {
 
 	InitSpawnArgsVariables();
 	shots		= 0;
+
+	upgrade = spawnArgs.GetBool( "upgrade" );
 }
 
 /*
@@ -109,10 +129,19 @@ bool rvMonsterTurret::CheckActions ( void ) {
 
 /*
 ================
+rvMonsterTurret::Open_Upgrade_UI
+================
+*/
+
+
+/*
+================
 rvMonsterTurret::Pain
 ================
 */
 bool rvMonsterTurret::Pain ( idEntity *inflictor, idEntity *attacker, int damage, const idVec3 &dir, int location ) {
+	idPlayer* player = gameLocal.GetLocalPlayer();
+
 	// Handle the shield effects
 	if ( shieldHealth > 0 ) {
 		shieldHealth -= damage;
@@ -121,6 +150,10 @@ bool rvMonsterTurret::Pain ( idEntity *inflictor, idEntity *attacker, int damage
 		} else {
 			PlayEffect ( "fx_shieldHit", GetPhysics()->GetOrigin(), (-GetPhysics()->GetGravityNormal()).ToMat3() );
 		}
+	}
+
+	if (attacker == player) {
+		gameLocal.Printf("I will be upgraded!\n");
 	}
 
 	return idAI::Pain ( inflictor, attacker, damage, dir, location );
@@ -137,6 +170,7 @@ bool rvMonsterTurret::Pain ( idEntity *inflictor, idEntity *attacker, int damage
 CLASS_STATES_DECLARATION ( rvMonsterTurret )
 	STATE ( "State_Combat",			rvMonsterTurret::State_Combat )
 	STATE ( "State_Killed",			rvMonsterTurret::State_Killed )
+	
 
 	STATE ( "Torso_BlasterAttack",	rvMonsterTurret::State_Torso_BlasterAttack )
 END_CLASS_STATES
