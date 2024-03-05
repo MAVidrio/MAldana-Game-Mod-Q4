@@ -881,12 +881,13 @@ rvWeaponLightningGun::State_Fire
 */
 stateResult_t rvWeaponLightningGun::State_Fire( const stateParms_t& parms ) {
 	enum {
-		FIRE_INIT,
-		//STAGE_ATTACKLOOP,
-		FIRE_WAIT
+		STAGE_INIT,
+		STAGE_ATTACKLOOP,
+		STAGE_DONE,
+		STAGE_DONEWAIT
 	};	
 	switch ( parms.stage ) {
-		/*
+		
 		case STAGE_INIT:
 			StartSound( "snd_fire", SND_CHANNEL_WEAPON, 0, false, NULL );
 			StartSound( "snd_fire_stereo", SND_CHANNEL_ITEM, 0, false, NULL );
@@ -945,48 +946,8 @@ stateResult_t rvWeaponLightningGun::State_Fire( const stateParms_t& parms ) {
 				return SRESULT_DONE;
 			}
 			return SRESULT_WAIT;
-		*/
-		case FIRE_INIT:
-
-			StartSound("snd_fire", SND_CHANNEL_WEAPON, 0, false, NULL);
-			StartSound("snd_fire_stereo", SND_CHANNEL_ITEM, 0, false, NULL);
-			StartSound("snd_fire_loop", SND_CHANNEL_BODY2, 0, false, NULL);
-
-			viewModel->SetShaderParm(6, 0);
-
-			viewModel->PlayEffect("fx_spire", spireJointView, true);
-			viewModel->PlayEffect("fx_flash", barrelJointView, true);
-			//don't fire if we're targeting a gui.
-			idPlayer* player;
-			player = gameLocal.GetLocalPlayer();
-
-			//make sure the player isn't looking at a gui first
-			if (player && player->GuiActive()) {
-				SetState("Lower", 0);
-				return SRESULT_DONE;
-			}
-
-			if (player && !player->CanFire()) {
-				//fireHeldTime = 0;
-				SetState("Idle", 4);
-				return SRESULT_DONE;
-			}
-
-			SpawnLightningTurret();
-			PlayEffect("fx_normalflash", barrelJointView, false);
-			PlayAnim(ANIMCHANNEL_ALL, "fire", parms.blendFrames);
-
-			return SRESULT_STAGE(FIRE_WAIT);
-
-		case FIRE_WAIT:
-			if (AnimDone(ANIMCHANNEL_ALL, 4)) {
-				SetState("Idle", 4);
-				return SRESULT_DONE;
-			}
-			if (wsfl.lowerWeapon) {
-				return SRESULT_DONE;
-			}
-			return SRESULT_WAIT;
+		
+		
 	}
 	return SRESULT_ERROR;
 }

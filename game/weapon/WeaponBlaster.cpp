@@ -26,6 +26,8 @@ public:
 
 	//New Turret command
 	void				Spawn_Turret		( void );
+	void				Spawn_Burst			( void );
+	void				Spawn_Machine		( void );
 
 protected:
 
@@ -40,6 +42,7 @@ private:
 	idVec2				chargeGlow;
 	bool				fireForced;
 	int					fireHeldTime;
+	bool				flash;
 
 	stateResult_t		State_Raise				( const stateParms_t& parms );
 	stateResult_t		State_Lower				( const stateParms_t& parms );
@@ -61,7 +64,7 @@ END_CLASS
 Special Spawn Command
 ================
 */
-void Spawn_f(const idCmdArgs& args) {
+void Spawn_fNormal(const idCmdArgs& args) {
 #ifndef _MPBETA
 	const char* key, * value;
 	int			i;
@@ -141,11 +144,40 @@ void rvWeaponBlaster::Spawn_Turret ( void ) {
 
 	args.AppendArg("spawn");
 	args.AppendArg("monster_turret_small_friendly");
-	Spawn_f(args);
+	Spawn_fNormal(args);
 
 	gameLocal.Printf("THE CODE WORK GIVE ME TIME.\n");
 }
 
+/*
+================
+rvWeaponBlaster::Spawn_Burst
+================
+*/
+void rvWeaponBlaster::Spawn_Burst(void) {
+	idCmdArgs args;
+
+	args.AppendArg("spawn");
+	args.AppendArg("monster_turret_small_burst_friendly");
+	Spawn_fNormal(args);
+
+	gameLocal.Printf("THE CODE WORK GIVE ME TIME.\n");
+}
+
+/*
+================
+rvWeaponBlaster::Spawn_Machine
+================
+*/
+void rvWeaponBlaster::Spawn_Machine(void) {
+	idCmdArgs args;
+
+	args.AppendArg("spawn");
+	args.AppendArg("monster_turret_large_machinegun_friendly");
+	Spawn_fNormal(args);
+
+	gameLocal.Printf("Summoning machine gun!\n");
+}
 
 /*
 ================
@@ -158,9 +190,11 @@ void rvWeaponBlaster::Flashlight ( bool on ) {
 	if ( on ) {
 		worldModel->ShowSurface ( "models/weapons/blaster/flare" );
 		viewModel->ShowSurface ( "models/weapons/blaster/flare" );
+		flash = on;
 	} else {
 		worldModel->HideSurface ( "models/weapons/blaster/flare" );
 		viewModel->HideSurface ( "models/weapons/blaster/flare" );
+		flash = on;
 	}
 }
 
@@ -505,15 +539,26 @@ stateResult_t rvWeaponBlaster::State_Fire ( const stateParms_t& parms ) {
 
 	
 			if ( gameLocal.time - fireHeldTime > chargeTime ) {	
-				// Spawn Turret When fully charged
-				Spawn_Turret();
+				if (flash) {
+					gameLocal.Printf("Flashlight is on");
+					Spawn_Machine();
+				}
+				else {
+					Spawn_Turret();
+				}
 
 				// Old code
 				//Attack ( true, 1, spread, 0, 1.0f );
 				PlayEffect ( "fx_chargedflash", barrelJointView, false );
 				PlayAnim( ANIMCHANNEL_ALL, "chargedfire", parms.blendFrames );
 			} else {
-				Attack ( false, 10, spread, 0, 1.0f );
+				if (flash) {
+					gameLocal.Printf("Flashlight is on");
+					Spawn_Machine();
+				}
+				else {
+					Spawn_Burst();
+				}
 				PlayEffect ( "fx_normalflash", barrelJointView, false );
 				PlayAnim( ANIMCHANNEL_ALL, "fire", parms.blendFrames );
 			}

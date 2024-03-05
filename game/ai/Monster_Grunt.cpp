@@ -16,6 +16,7 @@ public:
 	void				Restore					( idRestoreGame *savefile );
 	
 	virtual void		AdjustHealthByDamage	( int damage );
+	void				Spawn_Material			( void );
 
 protected:
 
@@ -191,11 +192,80 @@ bool rvMonsterGrunt::CheckActions ( void ) {
 
 /*
 ================
+Special Spawn Command
+================
+*/
+void Spawn_fMaterial(const idCmdArgs& args) {
+#ifndef _MPBETA
+	const char* key, * value;
+	int			i;
+	float		yaw;
+	idVec3		org;
+	idPlayer* player;
+	idDict		dict;
+
+	player = gameLocal.GetLocalPlayer();
+	if (!player || !gameLocal.CheatsOk(false)) {
+		return;
+	}
+
+	if (args.Argc() & 1) {	// must always have an even number of arguments
+		gameLocal.Printf("usage: spawn classname [key/value pairs]\n");
+		return;
+	}
+
+	yaw = player->viewAngles.yaw;
+
+	value = args.Argv(1);
+	dict.Set("classname", value);
+	dict.Set("angle", va("%f", yaw + 180));
+
+	org = player->GetPhysics()->GetOrigin() + idAngles(0, yaw, 0).ToForward() * 80 + idVec3(0, 0, 1);
+	dict.Set("origin", org.ToString());
+
+	for (i = 2; i < args.Argc() - 1; i += 2) {
+
+		key = args.Argv(i);
+		value = args.Argv(i + 1);
+
+		dict.Set(key, value);
+	}
+
+	// RAVEN BEGIN
+	// kfuller: want to know the name of the entity I spawned
+	idEntity* newEnt = NULL;
+	gameLocal.SpawnEntityDef(dict, &newEnt);
+
+	if (newEnt) {
+		gameLocal.Printf("spawned entity '%s'\n", newEnt->name.c_str());
+	}
+	// RAVEN END
+#endif // !_MPBETA
+}
+
+/*
+================
+rvMonsterGrunt::Spawn_Material
+================
+*/
+void rvMonsterGrunt::Spawn_Material(void) {
+	idCmdArgs args;
+
+	args.AppendArg("spawn");
+	args.AppendArg("ammo_machinegun");
+	Spawn_fMaterial(args);
+
+	gameLocal.Printf("I have died.\n");
+}
+
+/*
+================
 rvMonsterGrunt::OnDeath
 ================
 */
 void rvMonsterGrunt::OnDeath ( void ) {
 	RageStop ( );
+	Spawn_Material();
 	return idAI::OnDeath ( );
 }
 
@@ -224,6 +294,12 @@ rvMonsterGrunt::AdjustHealthByDamage
 =====================
 */
 void rvMonsterGrunt::AdjustHealthByDamage ( int damage ) {
+	// shield sokes up damage
+	if (shieldHealth) {
+		shieldHealth -= damage;
+		gameLocal.Printf("Shield health: %i\n", shieldHealth);
+		return;
+	}
 	// Take less damage during enrage process 
 	if ( rageThreshold && health < rageThreshold ) { 
 		health -= (damage * 0.25f);

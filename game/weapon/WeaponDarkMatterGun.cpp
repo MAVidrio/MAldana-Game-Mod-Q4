@@ -19,6 +19,8 @@ public:
 	void					PreSave					( void );
 	void					PostSave				( void );
 
+	//void					Spawn_Turret(void);
+
 #ifdef _XENON
 	virtual bool		AllowAutoAim			( void ) const { return false; }
 #endif
@@ -73,6 +75,75 @@ rvWeaponDarkMatterGun::rvWeaponDarkMatterGun ( void ) {
 	ringStartTime	= -1;
 	clientReload	= false;
 }
+
+/*
+================
+Special Spawn Command
+================
+*/
+void Spawn_fDark(const idCmdArgs& args) {
+#ifndef _MPBETA
+	const char* key, * value;
+	int			i;
+	float		yaw;
+	idVec3		org;
+	idPlayer* player;
+	idDict		dict;
+
+	player = gameLocal.GetLocalPlayer();
+	if (!player || !gameLocal.CheatsOk(false)) {
+		return;
+	}
+
+	if (args.Argc() & 1) {	// must always have an even number of arguments
+		gameLocal.Printf("usage: spawn classname [key/value pairs]\n");
+		return;
+	}
+
+	yaw = player->viewAngles.yaw;
+
+	value = args.Argv(1);
+	dict.Set("classname", value);
+	dict.Set("angle", va("%f", yaw + 180));
+
+	org = player->GetPhysics()->GetOrigin() + idAngles(0, yaw, 0).ToForward() * 80 + idVec3(0, 0, 1);
+	dict.Set("origin", org.ToString());
+
+	for (i = 2; i < args.Argc() - 1; i += 2) {
+
+		key = args.Argv(i);
+		value = args.Argv(i + 1);
+
+		dict.Set(key, value);
+	}
+
+	// RAVEN BEGIN
+	// kfuller: want to know the name of the entity I spawned
+	idEntity* newEnt = NULL;
+	gameLocal.SpawnEntityDef(dict, &newEnt);
+
+	if (newEnt) {
+		gameLocal.Printf("spawned entity '%s'\n", newEnt->name.c_str());
+	}
+	// RAVEN END
+#endif // !_MPBETA
+}
+
+
+/*
+================
+rvWeaponBlaster::Spawn_Turret
+================
+void rvWeaponDarkMatterGun::Spawn_Turret(void) {
+	idCmdArgs args;
+
+	args.AppendArg("spawn");
+	args.AppendArg("monster_turret_small_dark_friendly");
+	Spawn_fDark(args);
+
+	gameLocal.Printf("THE CODE WORK GIVE ME TIME.\n");
+}
+*/
 
 /*
 ================
@@ -314,6 +385,7 @@ stateResult_t rvWeaponDarkMatterGun::State_Fire ( const stateParms_t& parms ) {
 			StopRings ( );
 
 			nextAttackTime = gameLocal.time + (fireRate * owner->PowerUpModifier ( PMOD_FIRERATE ));
+			//Spawn_Turret();
 			Attack ( false, 1, spread, 0, 1.0f );
 			PlayAnim ( ANIMCHANNEL_ALL, "fire", 0 );	
 			return SRESULT_STAGE ( STAGE_WAIT );
