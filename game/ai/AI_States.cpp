@@ -35,7 +35,9 @@ CLASS_STATES_DECLARATION ( idAI )
 		
 	// Passive states
 	STATE ( "State_Passive",				idAI::State_Passive )
-		
+	STATE ( "State_Upgrade",				idAI::State_Upgraded )	
+	//STATE ( "State_Upgrade_Menu",			idAI::State_Upgrade_Menu)
+
 	// Combat states
 	STATE ( "State_Combat",					idAI::State_Combat )
 	STATE ( "State_CombatCover",			idAI::State_CombatCover )
@@ -183,6 +185,17 @@ stateResult_t idAI::State_Passive ( const stateParms_t& parms ) {
 
 /*
 ================
+idAI::State_Passive
+================
+*/
+stateResult_t idAI::State_Upgraded(const stateParms_t& parms) {
+	
+	return SRESULT_WAIT;
+}
+
+
+/*
+================
 idAI::State_Combat
 
 The base combat state is basically the clearing house for other combat states.  By calling
@@ -229,6 +242,7 @@ stateResult_t idAI::State_Combat ( const stateParms_t& parms ) {
 	}
 	return SRESULT_ERROR;
 }
+
 
 /*
 ================
@@ -292,7 +306,6 @@ stateResult_t idAI::State_CombatCover ( const stateParms_t& parms ) {
 	}
 	return SRESULT_ERROR;
 }
-
 
 /*
 ================

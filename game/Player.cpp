@@ -7066,7 +7066,6 @@ void idPlayer::UpdateFocus( void ) {
 
 			if ( isAI ) {
  				if ( static_cast<idAI *>( ent )->GetTalkState() >= TALK_OK ) {
-
 					// dluetscher: added optimization to eliminate redundant traces
 					if ( renderTrace.fraction == -1 ) {
 						gameLocal.TracePoint( this, renderTrace, start, end, MASK_SHOT_RENDERMODEL, this );
@@ -7114,6 +7113,7 @@ void idPlayer::UpdateFocus( void ) {
 			// Usable entities are last
 			if ( ent->fl.usable ) {
 			//jshepard: fake vehicles
+				//gameLocal.Printf("Looking at Entity.");
 				if ( allTrace.fraction == -1.f ) {
 					gameLocal.TracePoint( this, allTrace, start, end, MASK_ALL, this );
 				}

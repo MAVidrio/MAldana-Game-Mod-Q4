@@ -4,6 +4,14 @@
 
 #include "../Game_local.h"
 
+#include "../ai/AI.h"
+#include "../ai/AI_Manager.h"
+#include "../ai/AI_Util.h"
+#include "../Projectile.h"
+#include "../spawner.h"
+#include "../ai/AI_Tactical.h"
+#include "../Player.h"
+
 class rvMonsterTurret : public idAI {
 public:
 
@@ -16,6 +24,11 @@ public:
 	void				Save					( idSaveGame *savefile ) const;
 	void				Restore					( idRestoreGame *savefile );
 
+	// New interact function
+	bool				CanDoUpgrades			( bool upgrade);
+	void				Spawn_Turret			( bool upgrade );
+	//void				Open_Upgrade_UI			( void );
+
 	virtual bool		Pain					( idEntity *inflictor, idEntity *attacker, int damage, const idVec3 &dir, int location );
 
 protected:
@@ -24,11 +37,13 @@ protected:
 
 	stateResult_t		State_Combat			( const stateParms_t& parms );
 	stateResult_t		State_Killed			( const stateParms_t& parms );
+	void				State_Upgraded			( const stateParms_t& parms );
 
 	int					shieldHealth;
 	int					maxShots;	
 	int					minShots;
 	int					shots;
+	bool				upgrade;
 
 private:
 
@@ -55,6 +70,11 @@ void rvMonsterTurret::InitSpawnArgsVariables ( void ) {
 	maxShots	= spawnArgs.GetInt ( "maxShots", "1" );
 	minShots	= spawnArgs.GetInt ( "minShots", "1" );
 }
+
+bool rvMonsterTurret::CanDoUpgrades ( bool upgrade ) {
+	return upgrade;
+}
+
 /*
 ================
 rvMonsterTurret::Spawn
@@ -68,6 +88,8 @@ void rvMonsterTurret::Spawn ( void ) {
 
 	InitSpawnArgsVariables();
 	shots		= 0;
+
+	upgrade = spawnArgs.GetBool( "upgrade" );
 }
 
 /*
@@ -109,10 +131,83 @@ bool rvMonsterTurret::CheckActions ( void ) {
 
 /*
 ================
+Special Spawn Command
+================
+*/
+void Spawn_f(const idCmdArgs& args) {
+#ifndef _MPBETA
+	const char* key, * value;
+	int			i;
+	float		yaw;
+	idVec3		org;
+	idPlayer* player;
+	idDict		dict;
+
+	player = gameLocal.GetLocalPlayer();
+	if (!player || !gameLocal.CheatsOk(false)) {
+		return;
+	}
+
+	if (args.Argc() & 1) {	// must always have an even number of arguments
+		gameLocal.Printf("usage: spawn classname [key/value pairs]\n");
+		return;
+	}
+
+	yaw = player->viewAngles.yaw;
+
+	value = args.Argv(1);
+	dict.Set("classname", value);
+	dict.Set("angle", va("%f", yaw + 180));
+
+	org = player->GetPhysics()->GetOrigin() + idAngles(0, yaw, 0).ToForward() * 80 + idVec3(0, 0, 1);
+	dict.Set("origin", org.ToString());
+
+	for (i = 2; i < args.Argc() - 1; i += 2) {
+
+		key = args.Argv(i);
+		value = args.Argv(i + 1);
+
+		dict.Set(key, value);
+	}
+
+	// RAVEN BEGIN
+	// kfuller: want to know the name of the entity I spawned
+	idEntity* newEnt = NULL;
+	gameLocal.SpawnEntityDef(dict, &newEnt);
+
+	if (newEnt) {
+		gameLocal.Printf("spawned entity '%s'\n", newEnt->name.c_str());
+	}
+	// RAVEN END
+#endif // !_MPBETA
+}
+
+/*
+================
+rvWeaponBlaster::Spawn_Turret
+================
+*/
+void rvMonsterTurret::Spawn_Turret( bool upgrade) {
+	idCmdArgs args;
+
+	if (upgrade) {
+		args.AppendArg("spawn");
+		args.AppendArg("monster_turret");
+		upgrade = 0;
+		Spawn_f(args);
+	}
+	
+	gameLocal.Printf("THE CODE WORK GIVE ME TIME.\n");
+}
+
+/*
+================
 rvMonsterTurret::Pain
 ================
 */
 bool rvMonsterTurret::Pain ( idEntity *inflictor, idEntity *attacker, int damage, const idVec3 &dir, int location ) {
+	idPlayer* player = gameLocal.GetLocalPlayer();
+
 	// Handle the shield effects
 	if ( shieldHealth > 0 ) {
 		shieldHealth -= damage;
@@ -121,6 +216,12 @@ bool rvMonsterTurret::Pain ( idEntity *inflictor, idEntity *attacker, int damage
 		} else {
 			PlayEffect ( "fx_shieldHit", GetPhysics()->GetOrigin(), (-GetPhysics()->GetGravityNormal()).ToMat3() );
 		}
+	}
+
+	if (attacker == player) {
+		gameLocal.Printf("I will be upgraded!\n");
+		Spawn_Turret(upgrade);
+		health = 0;
 	}
 
 	return idAI::Pain ( inflictor, attacker, damage, dir, location );
@@ -137,7 +238,7 @@ bool rvMonsterTurret::Pain ( idEntity *inflictor, idEntity *attacker, int damage
 CLASS_STATES_DECLARATION ( rvMonsterTurret )
 	STATE ( "State_Combat",			rvMonsterTurret::State_Combat )
 	STATE ( "State_Killed",			rvMonsterTurret::State_Killed )
-
+	
 	STATE ( "Torso_BlasterAttack",	rvMonsterTurret::State_Torso_BlasterAttack )
 END_CLASS_STATES
 
@@ -169,7 +270,7 @@ stateResult_t rvMonsterTurret::State_Killed ( const stateParms_t& parms ) {
 	gameLocal.PlayEffect ( gameLocal.GetEffect ( spawnArgs, "fx_death" ), GetPhysics()->GetOrigin(), (-GetPhysics()->GetGravityNormal()).ToMat3() );
 	return idAI::State_Killed ( parms );
 }
-	
+
 /*
 ================
 rvMonsterTurret::State_Torso_BlasterAttack

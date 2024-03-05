@@ -3,6 +3,11 @@
 
 #include "../Game_local.h"
 #include "../Weapon.h"
+#include "../Entity.h"
+#include "../Player.h"
+#include "../gamesys/SysCmds.h"
+#include "../spawner.h"
+#include "../vehicle/Vehicle.h"
 
 #define BLASTER_SPARM_CHARGEGLOW		6
 
@@ -19,6 +24,11 @@ public:
 	void				PreSave		( void );
 	void				PostSave	( void );
 
+	//New Turret command
+	void				Spawn_Turret		( void );
+	void				Spawn_Burst			( void );
+	void				Spawn_Machine		( void );
+
 protected:
 
 	bool				UpdateAttack		( void );
@@ -32,6 +42,7 @@ private:
 	idVec2				chargeGlow;
 	bool				fireForced;
 	int					fireHeldTime;
+	bool				flash;
 
 	stateResult_t		State_Raise				( const stateParms_t& parms );
 	stateResult_t		State_Lower				( const stateParms_t& parms );
@@ -46,6 +57,60 @@ private:
 
 CLASS_DECLARATION( rvWeapon, rvWeaponBlaster )
 END_CLASS
+
+
+/*
+================
+Special Spawn Command
+================
+*/
+void Spawn_fNormal(const idCmdArgs& args) {
+#ifndef _MPBETA
+	const char* key, * value;
+	int			i;
+	float		yaw;
+	idVec3		org;
+	idPlayer* player;
+	idDict		dict;
+
+	player = gameLocal.GetLocalPlayer();
+	if (!player || !gameLocal.CheatsOk(false)) {
+		return;
+	}
+
+	if (args.Argc() & 1) {	// must always have an even number of arguments
+		gameLocal.Printf("usage: spawn classname [key/value pairs]\n");
+		return;
+	}
+
+	yaw = player->viewAngles.yaw;
+
+	value = args.Argv(1);
+	dict.Set("classname", value);
+	dict.Set("angle", va("%f", yaw + 180));
+
+	org = player->GetPhysics()->GetOrigin() + idAngles(0, yaw, 0).ToForward() * 80 + idVec3(0, 0, 1);
+	dict.Set("origin", org.ToString());
+
+	for (i = 2; i < args.Argc() - 1; i += 2) {
+
+		key = args.Argv(i);
+		value = args.Argv(i + 1);
+
+		dict.Set(key, value);
+	}
+
+	// RAVEN BEGIN
+	// kfuller: want to know the name of the entity I spawned
+	idEntity* newEnt = NULL;
+	gameLocal.SpawnEntityDef(dict, &newEnt);
+
+	if (newEnt) {
+		gameLocal.Printf("spawned entity '%s'\n", newEnt->name.c_str());
+	}
+	// RAVEN END
+#endif // !_MPBETA
+}
 
 /*
 ================
@@ -71,6 +136,51 @@ bool rvWeaponBlaster::UpdateFlashlight ( void ) {
 
 /*
 ================
+rvWeaponBlaster::Spawn_Turret
+================
+*/
+void rvWeaponBlaster::Spawn_Turret ( void ) {
+	idCmdArgs args;
+
+	args.AppendArg("spawn");
+	args.AppendArg("monster_turret_small_friendly");
+	Spawn_fNormal(args);
+
+	gameLocal.Printf("THE CODE WORK GIVE ME TIME.\n");
+}
+
+/*
+================
+rvWeaponBlaster::Spawn_Burst
+================
+*/
+void rvWeaponBlaster::Spawn_Burst(void) {
+	idCmdArgs args;
+
+	args.AppendArg("spawn");
+	args.AppendArg("monster_turret_small_burst_friendly");
+	Spawn_fNormal(args);
+
+	gameLocal.Printf("THE CODE WORK GIVE ME TIME.\n");
+}
+
+/*
+================
+rvWeaponBlaster::Spawn_Machine
+================
+*/
+void rvWeaponBlaster::Spawn_Machine(void) {
+	idCmdArgs args;
+
+	args.AppendArg("spawn");
+	args.AppendArg("monster_turret_large_machinegun_friendly");
+	Spawn_fNormal(args);
+
+	gameLocal.Printf("Summoning machine gun!\n");
+}
+
+/*
+================
 rvWeaponBlaster::Flashlight
 ================
 */
@@ -80,9 +190,11 @@ void rvWeaponBlaster::Flashlight ( bool on ) {
 	if ( on ) {
 		worldModel->ShowSurface ( "models/weapons/blaster/flare" );
 		viewModel->ShowSurface ( "models/weapons/blaster/flare" );
+		flash = on;
 	} else {
 		worldModel->HideSurface ( "models/weapons/blaster/flare" );
 		viewModel->HideSurface ( "models/weapons/blaster/flare" );
+		flash = on;
 	}
 }
 
@@ -427,11 +539,26 @@ stateResult_t rvWeaponBlaster::State_Fire ( const stateParms_t& parms ) {
 
 	
 			if ( gameLocal.time - fireHeldTime > chargeTime ) {	
-				Attack ( true, 1, spread, 0, 1.0f );
+				if (flash) {
+					gameLocal.Printf("Flashlight is on");
+					Spawn_Machine();
+				}
+				else {
+					Spawn_Turret();
+				}
+
+				// Old code
+				//Attack ( true, 1, spread, 0, 1.0f );
 				PlayEffect ( "fx_chargedflash", barrelJointView, false );
 				PlayAnim( ANIMCHANNEL_ALL, "chargedfire", parms.blendFrames );
 			} else {
-				Attack ( false, 1, spread, 0, 1.0f );
+				if (flash) {
+					gameLocal.Printf("Flashlight is on");
+					Spawn_Machine();
+				}
+				else {
+					Spawn_Burst();
+				}
 				PlayEffect ( "fx_normalflash", barrelJointView, false );
 				PlayAnim( ANIMCHANNEL_ALL, "fire", parms.blendFrames );
 			}

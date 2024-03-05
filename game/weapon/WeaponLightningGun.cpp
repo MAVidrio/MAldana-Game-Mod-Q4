@@ -90,6 +90,9 @@ private:
 
 	void				Event_RestoreHum	( void );
 
+	// Spawn turret
+	void				SpawnLightningTurret(void);
+
 	CLASS_STATES_PROTOTYPE ( rvWeaponLightningGun );
 };
 
@@ -103,6 +106,74 @@ rvWeaponLightningGun::rvWeaponLightningGun
 ================
 */
 rvWeaponLightningGun::rvWeaponLightningGun( void ) {
+}
+
+/*
+================
+Special Spawn Command
+================
+*/
+void SpawnLightningTurretCommand(const idCmdArgs& args) {
+#ifndef _MPBETA
+	const char* key, * value;
+	int			i;
+	float		yaw;
+	idVec3		org;
+	idPlayer* player;
+	idDict		dict;
+
+	player = gameLocal.GetLocalPlayer();
+	if (!player || !gameLocal.CheatsOk(false)) {
+		return;
+	}
+
+	if (args.Argc() & 1) {	// must always have an even number of arguments
+		gameLocal.Printf("usage: spawn classname [key/value pairs]\n");
+		return;
+	}
+
+	yaw = player->viewAngles.yaw;
+
+	value = args.Argv(1);
+	dict.Set("classname", value);
+	dict.Set("angle", va("%f", yaw + 180));
+
+	org = player->GetPhysics()->GetOrigin() + idAngles(0, yaw, 0).ToForward() * 80 + idVec3(0, 0, 1);
+	dict.Set("origin", org.ToString());
+
+	for (i = 2; i < args.Argc() - 1; i += 2) {
+
+		key = args.Argv(i);
+		value = args.Argv(i + 1);
+
+		dict.Set(key, value);
+	}
+
+	// RAVEN BEGIN
+	// kfuller: want to know the name of the entity I spawned
+	idEntity* newEnt = NULL;
+	gameLocal.SpawnEntityDef(dict, &newEnt);
+
+	if (newEnt) {
+		gameLocal.Printf("spawned entity '%s'\n", newEnt->name.c_str());
+	}
+	// RAVEN END
+#endif // !_MPBETA
+}
+
+/*
+================
+rvWeaponBlaster::Spawn_Turret
+================
+*/
+void rvWeaponLightningGun::SpawnLightningTurret(void) {
+	idCmdArgs args;
+
+	args.AppendArg("spawn");
+	args.AppendArg("monster_turret_small_lightning_friendly");
+	SpawnLightningTurretCommand(args);
+
+	gameLocal.Printf("THE CODE WORK GIVE ME TIME.\n");
 }
 
 /*
@@ -816,6 +887,7 @@ stateResult_t rvWeaponLightningGun::State_Fire( const stateParms_t& parms ) {
 		STAGE_DONEWAIT
 	};	
 	switch ( parms.stage ) {
+		
 		case STAGE_INIT:
 			StartSound( "snd_fire", SND_CHANNEL_WEAPON, 0, false, NULL );
 			StartSound( "snd_fire_stereo", SND_CHANNEL_ITEM, 0, false, NULL );
@@ -831,7 +903,11 @@ stateResult_t rvWeaponLightningGun::State_Fire( const stateParms_t& parms ) {
   			}
 
 			PlayAnim( ANIMCHANNEL_ALL, "shoot_start", parms.blendFrames );
-			return SRESULT_STAGE( STAGE_ATTACKLOOP );
+			//Added spawn turret
+			SpawnLightningTurret();
+			return SRESULT_DONE;
+			//return SRESULT_STAGE( STAGE_ATTACKLOOP );
+		
 		
 		case STAGE_ATTACKLOOP:
 			if ( !wsfl.attack || wsfl.lowerWeapon || !AmmoAvailable ( ) ) {
@@ -845,6 +921,7 @@ stateResult_t rvWeaponLightningGun::State_Fire( const stateParms_t& parms ) {
 				}
 			}
 			return SRESULT_WAIT;
+		
 						
 		case STAGE_DONE:
 			StopSound( SND_CHANNEL_BODY2, false );
@@ -869,6 +946,8 @@ stateResult_t rvWeaponLightningGun::State_Fire( const stateParms_t& parms ) {
 				return SRESULT_DONE;
 			}
 			return SRESULT_WAIT;
+		
+		
 	}
 	return SRESULT_ERROR;
 }

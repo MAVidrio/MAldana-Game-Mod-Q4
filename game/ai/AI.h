@@ -800,6 +800,9 @@ public:
 	virtual bool			CanTurn							( void ) const;
 	virtual bool			CanMove							( void ) const;
 	virtual bool			CanAnnounce						( float chance ) const;
+	
+	// new bool for AI
+	virtual bool			CanUpgrade						( bool upgrade ) const;
 
 	virtual bool			SkipCurrentDestination			( void ) const;
 
@@ -1192,6 +1195,7 @@ protected:
 	stateResult_t			State_Remove						( const stateParms_t& parms );
 
 	stateResult_t			State_Passive						( const stateParms_t& parms );
+	stateResult_t			State_Upgraded						( const stateParms_t& parms );
 
 	stateResult_t			State_Combat						( const stateParms_t& parms );
 	stateResult_t			State_CombatCover					( const stateParms_t& parms );
@@ -1337,6 +1341,10 @@ ID_INLINE bool idAI::CanMove ( void ) const {
 
 ID_INLINE bool idAI::CanAnnounce ( float chance ) const {
 	return !aifl.dead && !IsSpeaking ( ) && !af.IsActive ( ) && !combat.fl.noChatter && ( gameLocal.random.RandomFloat() < chance );
+}
+
+ID_INLINE bool idAI::CanUpgrade(bool upgrade) const {
+	return upgrade;
 }
 
 ID_INLINE void idAI::SetFocus ( aiFocus_t focus, int time ) {
