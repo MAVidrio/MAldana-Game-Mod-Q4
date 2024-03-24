@@ -1,0 +1,206 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\Git\\GameMod\\MidtermVersion\\MAldana-Game-Mod-Q4\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{49BEC5C6-B964-417A-851E-808886B57430}|game.vcxproj|D:\\Git\\GameMod\\MidtermVersion\\MAldana-Game-Mod-Q4\\game\\weapon\\WeaponBlaster.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{49BEC5C6-B964-417A-851E-808886B57430}|game.vcxproj|solutionrelative:game\\weapon\\WeaponBlaster.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49BEC5C6-B964-417A-851E-808886B57430}|game.vcxproj|D:\\Git\\GameMod\\MidtermVersion\\MAldana-Game-Mod-Q4\\game\\ai\\Monster_Turret.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{49BEC5C6-B964-417A-851E-808886B57430}|game.vcxproj|solutionrelative:game\\ai\\Monster_Turret.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\SteamLibrary\\steamapps\\common\\Quake 4\\Midterm\\def\\ai\\monster_turret.def||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49BEC5C6-B964-417A-851E-808886B57430}|game.vcxproj|D:\\Git\\GameMod\\MidtermVersion\\MAldana-Game-Mod-Q4\\game\\Player.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{49BEC5C6-B964-417A-851E-808886B57430}|game.vcxproj|solutionrelative:game\\Player.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49BEC5C6-B964-417A-851E-808886B57430}|game.vcxproj|D:\\Git\\GameMod\\MidtermVersion\\MAldana-Game-Mod-Q4\\game\\gamesys\\SysCmds.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{49BEC5C6-B964-417A-851E-808886B57430}|game.vcxproj|solutionrelative:game\\gamesys\\SysCmds.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49BEC5C6-B964-417A-851E-808886B57430}|game.vcxproj|D:\\Git\\GameMod\\MidtermVersion\\MAldana-Game-Mod-Q4\\game\\ai\\AI.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{49BEC5C6-B964-417A-851E-808886B57430}|game.vcxproj|solutionrelative:game\\ai\\AI.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49BEC5C6-B964-417A-851E-808886B57430}|game.vcxproj|D:\\Git\\GameMod\\MidtermVersion\\MAldana-Game-Mod-Q4\\game\\ai\\Monster_TeleportDropper.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{49BEC5C6-B964-417A-851E-808886B57430}|game.vcxproj|solutionrelative:game\\ai\\Monster_TeleportDropper.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\migue\\AppData\\Local\\Temp\\7zO0E893C34\\actor.def||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49BEC5C6-B964-417A-851E-808886B57430}|game.vcxproj|D:\\Git\\GameMod\\MidtermVersion\\MAldana-Game-Mod-Q4\\game\\spawner.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{49BEC5C6-B964-417A-851E-808886B57430}|game.vcxproj|solutionrelative:game\\spawner.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49BEC5C6-B964-417A-851E-808886B57430}|game.vcxproj|D:\\Git\\GameMod\\MidtermVersion\\MAldana-Game-Mod-Q4\\game\\spawner.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{49BEC5C6-B964-417A-851E-808886B57430}|game.vcxproj|solutionrelative:game\\spawner.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\SteamLibrary\\steamapps\\common\\Quake 4\\Midterm\\def\\ai\\monster_teleport_dropper.def||{8B382828-6202-11D1-8870-0000F87579D2}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 4,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "AI.h",
+              "DocumentMoniker": "D:\\Git\\GameMod\\MidtermVersion\\MAldana-Game-Mod-Q4\\game\\ai\\AI.h",
+              "RelativeDocumentMoniker": "game\\ai\\AI.h",
+              "ToolTip": "D:\\Git\\GameMod\\MidtermVersion\\MAldana-Game-Mod-Q4\\game\\ai\\AI.h",
+              "RelativeToolTip": "game\\ai\\AI.h",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2024-03-23T23:57:26.433Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "SysCmds.cpp",
+              "DocumentMoniker": "D:\\Git\\GameMod\\MidtermVersion\\MAldana-Game-Mod-Q4\\game\\gamesys\\SysCmds.cpp",
+              "RelativeDocumentMoniker": "game\\gamesys\\SysCmds.cpp",
+              "ToolTip": "D:\\Git\\GameMod\\MidtermVersion\\MAldana-Game-Mod-Q4\\game\\gamesys\\SysCmds.cpp",
+              "RelativeToolTip": "game\\gamesys\\SysCmds.cpp",
+              "ViewState": "AQIAAAIEAAAAAAAAAAAlwBkEAAASAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-03-23T23:49:32.604Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Player.cpp",
+              "DocumentMoniker": "D:\\Git\\GameMod\\MidtermVersion\\MAldana-Game-Mod-Q4\\game\\Player.cpp",
+              "RelativeDocumentMoniker": "game\\Player.cpp",
+              "ToolTip": "D:\\Git\\GameMod\\MidtermVersion\\MAldana-Game-Mod-Q4\\game\\Player.cpp",
+              "RelativeToolTip": "game\\Player.cpp",
+              "ViewState": "AQIAAHkoAAAAAAAAAAAlwJ0oAAAKAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-03-23T23:47:36.794Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "WeaponBlaster.cpp",
+              "DocumentMoniker": "D:\\Git\\GameMod\\MidtermVersion\\MAldana-Game-Mod-Q4\\game\\weapon\\WeaponBlaster.cpp",
+              "RelativeDocumentMoniker": "game\\weapon\\WeaponBlaster.cpp",
+              "ToolTip": "D:\\Git\\GameMod\\MidtermVersion\\MAldana-Game-Mod-Q4\\game\\weapon\\WeaponBlaster.cpp",
+              "RelativeToolTip": "game\\weapon\\WeaponBlaster.cpp",
+              "ViewState": "AQIAAIEAAAAAAAAAAAAQwJoAAAAtAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-03-23T22:26:51.423Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Monster_Turret.cpp",
+              "DocumentMoniker": "D:\\Git\\GameMod\\MidtermVersion\\MAldana-Game-Mod-Q4\\game\\ai\\Monster_Turret.cpp",
+              "RelativeDocumentMoniker": "game\\ai\\Monster_Turret.cpp",
+              "ToolTip": "D:\\Git\\GameMod\\MidtermVersion\\MAldana-Game-Mod-Q4\\game\\ai\\Monster_Turret.cpp",
+              "RelativeToolTip": "game\\ai\\Monster_Turret.cpp",
+              "ViewState": "AQIAAJEAAAAAAAAAAAAAAIQAAAAQAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-03-23T21:01:18.818Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "monster_turret.def",
+              "DocumentMoniker": "D:\\SteamLibrary\\steamapps\\common\\Quake 4\\Midterm\\def\\ai\\monster_turret.def",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\SteamLibrary\\steamapps\\common\\Quake 4\\Midterm\\def\\ai\\monster_turret.def",
+              "ToolTip": "D:\\SteamLibrary\\steamapps\\common\\Quake 4\\Midterm\\def\\ai\\monster_turret.def",
+              "RelativeToolTip": "..\\..\\..\\..\\SteamLibrary\\steamapps\\common\\Quake 4\\Midterm\\def\\ai\\monster_turret.def",
+              "ViewState": "AQIAAMUAAAAAAAAAAAAwwNoAAAAKAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001913|",
+              "WhenOpened": "2024-03-23T21:00:37.816Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Monster_TeleportDropper.cpp",
+              "DocumentMoniker": "D:\\Git\\GameMod\\MidtermVersion\\MAldana-Game-Mod-Q4\\game\\ai\\Monster_TeleportDropper.cpp",
+              "RelativeDocumentMoniker": "game\\ai\\Monster_TeleportDropper.cpp",
+              "ToolTip": "D:\\Git\\GameMod\\MidtermVersion\\MAldana-Game-Mod-Q4\\game\\ai\\Monster_TeleportDropper.cpp",
+              "RelativeToolTip": "game\\ai\\Monster_TeleportDropper.cpp",
+              "ViewState": "AQIAAAACAAAAAAAAAAAqwA0CAAADAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-03-23T20:37:52.066Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "actor.def",
+              "DocumentMoniker": "C:\\Users\\migue\\AppData\\Local\\Temp\\7zO0E893C34\\actor.def",
+              "ToolTip": "C:\\Users\\migue\\AppData\\Local\\Temp\\7zO0E893C34\\actor.def",
+              "ViewState": "AQIAAGYAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001913|",
+              "WhenOpened": "2024-03-23T20:30:26.016Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "spawner.h",
+              "DocumentMoniker": "D:\\Git\\GameMod\\MidtermVersion\\MAldana-Game-Mod-Q4\\game\\spawner.h",
+              "RelativeDocumentMoniker": "game\\spawner.h",
+              "ToolTip": "D:\\Git\\GameMod\\MidtermVersion\\MAldana-Game-Mod-Q4\\game\\spawner.h",
+              "RelativeToolTip": "game\\spawner.h",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2024-03-23T20:29:08.598Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "spawner.cpp",
+              "DocumentMoniker": "D:\\Git\\GameMod\\MidtermVersion\\MAldana-Game-Mod-Q4\\game\\spawner.cpp",
+              "RelativeDocumentMoniker": "game\\spawner.cpp",
+              "ToolTip": "D:\\Git\\GameMod\\MidtermVersion\\MAldana-Game-Mod-Q4\\game\\spawner.cpp",
+              "RelativeToolTip": "game\\spawner.cpp",
+              "ViewState": "AQIAABUAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-03-23T20:27:54.515Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "monster_teleport_dropper.def",
+              "DocumentMoniker": "D:\\SteamLibrary\\steamapps\\common\\Quake 4\\Midterm\\def\\ai\\monster_teleport_dropper.def",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\SteamLibrary\\steamapps\\common\\Quake 4\\Midterm\\def\\ai\\monster_teleport_dropper.def",
+              "ToolTip": "D:\\SteamLibrary\\steamapps\\common\\Quake 4\\Midterm\\def\\ai\\monster_teleport_dropper.def",
+              "RelativeToolTip": "..\\..\\..\\..\\SteamLibrary\\steamapps\\common\\Quake 4\\Midterm\\def\\ai\\monster_teleport_dropper.def",
+              "ViewState": "AQIAAF0AAAAAAAAAAIAwwGoAAAAoAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001913|",
+              "WhenOpened": "2024-03-23T19:14:34.274Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
