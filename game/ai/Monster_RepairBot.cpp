@@ -4,6 +4,9 @@
 
 #include "../Game_local.h"
 #include "../client/ClientModel.h"
+#include "AI_Manager.h"
+#include "AI_Util.h"
+#include "AI_Medic.h"
 
 class repairBotArm_t {
 public:

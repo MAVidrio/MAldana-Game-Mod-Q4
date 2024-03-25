@@ -73,6 +73,8 @@ const int	POWERUP_BLINK_TIME	= 1000;			// Time between powerup wear off sounds
 const float MIN_BOB_SPEED		= 5.0f;			// minimum speed to bob and play run/walk animations at
 const int	MAX_RESPAWN_TIME	= 10000;
 const int	RAGDOLL_DEATH_TIME	= 3000;
+const int	REFLECTOR_TIME		= 1000;			// Duraction of reflector shield
+
 #ifdef _XENON
 	const int	RAGDOLL_DEATH_TIME_XEN_SP	= 1000;
 	const int	MAX_RESPAWN_TIME_XEN_SP	= 3000;
@@ -4613,6 +4615,34 @@ void idPlayer::StopPowerUpEffect( int powerup ) {
 			StopEffect( "fx_ammoregen" );
 			break;
 		}
+	}
+}
+
+/*
+===============
+idPlayer::ReflectorState
+===============
+*/
+bool idPlayer::ReflectorState() {
+	if (reflectorEnable) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+/*
+===============
+idPlayer::ReflectorOn
+===============
+*/
+void idPlayer::ReflectorOn(bool state) {
+	if (state) {
+		reflectorEnable = true;
+	}
+	else {
+		reflectorEnable = false;
 	}
 }
 
@@ -9723,6 +9753,16 @@ void idPlayer::Kill( bool delayRespawn, bool nodamage ) {
 	}
 }
 
+// Reflect Projectile
+void ReflectProjectile(idProjectile* projectile) {
+	idPlayer* player = gameLocal.GetLocalPlayer();
+
+	gameLocal.Printf("Speed: %s\n", projectile->GetSpeed());
+
+	projectile->SetOwner(player);
+	projectile->SetSpeed(1000.0f, 100);
+}
+
 /*
 ==================
 idPlayer::Killed
@@ -10245,65 +10285,77 @@ void idPlayer::Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &di
 // RAVEN END
 
 	// do the damage
-	if ( damage > 0 ) {
-		if ( !gameLocal.isMultiplayer ) {
-			if ( g_useDynamicProtection.GetBool() && g_skill.GetInteger() < 2 ) {
-				if ( gameLocal.time > lastDmgTime + 500 && dynamicProtectionScale > 0.25f ) {
-					dynamicProtectionScale -= 0.05f;
+	if (damage > 0) {
+
+		// New reflector shield. Checks if the attack is a projectile and the shield is up
+		if (inflictor->IsType(idProjectile::GetClassType()) && ReflectorState()) {
+			gameLocal.Printf("Nuh uh!\n");
+			
+			// go to Reflect Projectile
+			idProjectile* projectile = dynamic_cast<idProjectile*>(inflictor);
+			ReflectProjectile(projectile);
+		}
+		else {
+			if (!gameLocal.isMultiplayer) {
+				if (g_useDynamicProtection.GetBool() && g_skill.GetInteger() < 2) {
+					if (gameLocal.time > lastDmgTime + 500 && dynamicProtectionScale > 0.25f) {
+						dynamicProtectionScale -= 0.05f;
+					}
+				}
+
+				if (dynamicProtectionScale > 0.0f) {
+					damage *= dynamicProtectionScale;
 				}
 			}
 
-			if ( dynamicProtectionScale > 0.0f ) {
-				damage *= dynamicProtectionScale;
+			if (damage < 1) {
+				damage = 1;
 			}
-		}
 
-		if ( damage < 1 ) {
-			damage = 1;
-		}
+			int oldHealth = health;
+			health -= damage;
 
-		int oldHealth = health;
-		health -= damage;
+			GAMELOG_ADD(va("player%d_damage_taken", entityNumber), damage);
+			GAMELOG_ADD(va("player%d_damage_%s", entityNumber, damageDefName), damage);
 
-		GAMELOG_ADD ( va("player%d_damage_taken", entityNumber ), damage );
-		GAMELOG_ADD ( va("player%d_damage_%s", entityNumber, damageDefName), damage );
-
-		// Check undying mode
-		if ( !damageDef->dict.GetBool( "noGod" ) ) {
-			if ( undying ) {
-				if ( health < 1 ) {
-					health = 1;
+			// Check undying mode
+			if (!damageDef->dict.GetBool("noGod")) {
+				if (undying) {
+					if (health < 1) {
+						health = 1;
+					}
 				}
 			}
-		}
 
-		if ( health <= 0 ) {
+			if (health <= 0) {
 
-			if ( health < -999 ) {
-				health = -999;
-			}
-
- 			isTelefragged = damageDef->dict.GetBool( "telefrag" );
- 
- 			lastDmgTime = gameLocal.time;
-
-			Killed( inflictor, attacker, damage, dir, location );
-
-			if ( oldHealth > 0 ) {	
-				float pushScale = 1.0f;
-				if ( inflictor && inflictor->IsType ( idPlayer::Type ) ) {
-					pushScale = static_cast<idPlayer*>(inflictor)->PowerUpModifier ( PMOD_PROJECTILE_DEATHPUSH );
+				if (health < -999) {
+					health = -999;
 				}
-				InitDeathPush ( dir, location, &damageDef->dict, pushScale );
-			}			
-		} else {
-			// force a blink
-			blink_time = 0;
 
-			// let the anim script know we took damage
- 			pfl.pain = Pain( inflictor, attacker, damage, dir, location );
-			if ( !g_testDeath.GetBool() ) {
+				isTelefragged = damageDef->dict.GetBool("telefrag");
+
 				lastDmgTime = gameLocal.time;
+
+				Killed(inflictor, attacker, damage, dir, location);
+
+				if (oldHealth > 0) {
+					float pushScale = 1.0f;
+					if (inflictor && inflictor->IsType(idPlayer::Type)) {
+						pushScale = static_cast<idPlayer*>(inflictor)->PowerUpModifier(PMOD_PROJECTILE_DEATHPUSH);
+					}
+					InitDeathPush(dir, location, &damageDef->dict, pushScale);
+				}
+			}
+			else {
+				// force a blink
+				blink_time = 0;
+
+				// let the anim script know we took damage
+				pfl.pain = Pain(inflictor, attacker, damage, dir, location);
+				if (!g_testDeath.GetBool()) {
+					lastDmgTime = gameLocal.time;
+				}
 			}
 		}
 	} else {

@@ -721,6 +721,11 @@ bool idProjectile::Collide( const trace_t &collision, const idVec3 &velocity, bo
 	}
 
  	// just get rid of the projectile when it hits a player in noclip
+	if (ent->IsType(idPlayer::GetClassType()) && static_cast<idPlayer*>(ent)->ReflectorState()) {
+		common->DPrintf("Projectile collision no impact\n");
+		return true;
+	}
+
  	if ( ent->IsType( idPlayer::GetClassType() ) && static_cast<idPlayer *>( ent )->noclip ) {
    		PostEventMS( &EV_Remove, 0 );
   		common->DPrintf( "Projectile collision no impact\n" );

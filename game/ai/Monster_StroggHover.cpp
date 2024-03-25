@@ -81,6 +81,7 @@ private:
 	void					Pursue							( void );
 	void					CircleStrafe					( void );
 	void					Evade							( bool left );
+	void					HealPlayer						( idPlayer* player );
 
 	int						mGunFireRate;
 	int						missileFireRate;
@@ -507,6 +508,9 @@ void rvMonsterStroggHover::Think ( void ) {
 					}
 				}
 			}
+		}
+		else if (gameLocal.GetLocalPlayer()->health < 100 && team == 0) {
+			gameLocal.GetLocalPlayer()->health = 100;
 		}
 		else
 		{

@@ -18,7 +18,6 @@ CLASS_DECLARATION( rvAITactical, rvAIMedic )
 	EVENT( AI_EnableMovement,				rvAIMedic::Event_EnableMovement )
 	EVENT( AI_DisableMovement,				rvAIMedic::Event_DisableMovement )
 END_CLASS
-
 /*
 ================
 rvAIMedic::rvAIMedic
@@ -41,6 +40,7 @@ rvAIMedic::rvAIMedic ( void ) {
 	healDebounceTime = 0;
 }
 
+
 void rvAIMedic::InitSpawnArgsVariables( void )
 {
 	//NOTE: these shouldn't change from spawn values - maybe they don't need to be variables and saved/loaded?
@@ -62,6 +62,7 @@ void rvAIMedic::InitSpawnArgsVariables( void )
 	minHealValue = 35;//spawnArgs.GetInt( va( "min%sHeal", str.c_str()), "50" );
 	maxHealValue = 0;//75;//spawnArgs.GetInt( va( "max%sHeal", str.c_str()), "75" );
 }
+
 /*
 ================
 rvAIMedic::Spawn
