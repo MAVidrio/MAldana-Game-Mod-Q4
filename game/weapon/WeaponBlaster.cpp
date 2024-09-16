@@ -3,6 +3,7 @@
 
 #include "../Game_local.h"
 #include "../Weapon.h"
+#include "../ai/AI.h"
 
 #define BLASTER_SPARM_CHARGEGLOW		6
 
@@ -19,6 +20,14 @@ public:
 	void				PreSave		( void );
 	void				PostSave	( void );
 
+	// Creates a teleporter
+	void				TeleporterOn		( void );
+	// Teleport Player to teleporter
+	void				TeleportPlayer		( void );
+
+	// Spawn a shield for 1 second
+	void				ReflectorShield		( void );
+
 protected:
 
 	bool				UpdateAttack		( void );
@@ -32,6 +41,11 @@ private:
 	idVec2				chargeGlow;
 	bool				fireForced;
 	int					fireHeldTime;
+
+	// Tells game if the player will teleport now
+	bool				ActivateTeleport;
+	// Tells game if there is an active teleporter
+	bool				MadeTeleporter;
 
 	stateResult_t		State_Raise				( const stateParms_t& parms );
 	stateResult_t		State_Lower				( const stateParms_t& parms );
@@ -69,6 +83,129 @@ bool rvWeaponBlaster::UpdateFlashlight ( void ) {
 	return true;		
 }
 
+void Spawn_fTeleporter(const idCmdArgs& args) {
+#ifndef _MPBETA
+	const char* key, * value;
+	int			i;
+	float		yaw;
+	idVec3		org;
+	idPlayer* player;
+	idDict		dict;
+
+	player = gameLocal.GetLocalPlayer();
+	if (!player || !gameLocal.CheatsOk(false)) {
+		return;
+	}
+
+	if (args.Argc() & 1) {	// must always have an even number of arguments
+		gameLocal.Printf("usage: spawn classname [key/value pairs]\n");
+		return;
+	}
+
+	yaw = player->viewAngles.yaw;
+
+	value = args.Argv(1);
+	dict.Set("classname", value);
+	dict.Set("angle", va("%f", yaw + 180));
+
+	org = player->GetPhysics()->GetOrigin() + idAngles(0, yaw, 0).ToForward() * 80 + idVec3(0, 0, 1);
+	dict.Set("origin", org.ToString());
+
+	for (i = 2; i < args.Argc() - 1; i += 2) {
+
+		key = args.Argv(i);
+		value = args.Argv(i + 1);
+
+		dict.Set(key, value);
+	}
+
+	// RAVEN BEGIN
+	// kfuller: want to know the name of the entity I spawned
+	idEntity* newEnt = NULL;
+	gameLocal.SpawnEntityDef(dict, &newEnt);
+
+	if (newEnt) {
+		gameLocal.Printf("spawned entity '%s'\n", newEnt->name.c_str());
+	}
+	// RAVEN END
+#endif // !_MPBETA
+}
+
+/*
+================
+rvWeaponBlaster::TeleporterOn
+================
+*/
+void rvWeaponBlaster::TeleporterOn(void) {
+	idCmdArgs args;
+
+	args.AppendArg("spawn");
+	args.AppendArg("monster_turret_teleporter");
+	Spawn_fTeleporter(args);
+	MadeTeleporter = true;
+
+	gameLocal.Printf("Setting up teleporter.\n");
+}
+
+/*
+================
+rvWeaponBlaster::TeleportPlayer
+================
+*/
+void rvWeaponBlaster::TeleportPlayer(void) {
+	idCmdArgs args;
+
+	// Get Player and making sure they exist
+	idPlayer* player = gameLocal.GetLocalPlayer();
+	if (!player) return;
+
+	// Search for active teleporters
+	gameLocal.Printf("Searching for active teleporter.\n");
+	idEntity* teleporter = nullptr;
+	for (int i = 0; i < gameLocal.num_entities; i++) {
+		idEntity* ent = gameLocal.entities[i];
+		if (ent && ent->IsActive()) {
+			if (strcmp(ent->GetEntityDefName(), "monster_turret_teleporter") == 0) {
+				teleporter = ent;
+				break;
+			}
+		}
+	}
+
+	// If there is an active teleporter,
+	// Teleport the player to it and destroy it.
+	// Change MadeTeleporter so that the player can 
+	// use it again.
+	if (teleporter) {
+		player->SetOrigin(teleporter->GetEyePosition());
+		teleporter->Event_Remove();
+		MadeTeleporter = true;
+	}
+
+	//args.AppendArg("teleport");
+	// Try to get the entity name of the turret.
+	//args.AppendArg("rvMonster_Turret_monster_turret_teleporter_115");
+
+	//args.
+
+	//Spawn_fTeleporter(args);
+
+	gameLocal.Printf("Teleporting Player.\n");
+}
+
+/*
+================
+rvWeaponBlaster::ReflectorShield
+================
+*/
+void rvWeaponBlaster::ReflectorShield(void) {
+	idPlayer* player = gameLocal.GetLocalPlayer();
+	if (!player) return;
+
+	player->ReflectorOn(true);
+	gameLocal.Printf("Reflector active.\n");
+}
+
 /*
 ================
 rvWeaponBlaster::Flashlight
@@ -80,9 +217,11 @@ void rvWeaponBlaster::Flashlight ( bool on ) {
 	if ( on ) {
 		worldModel->ShowSurface ( "models/weapons/blaster/flare" );
 		viewModel->ShowSurface ( "models/weapons/blaster/flare" );
+		//TeleporterOn();
 	} else {
 		worldModel->HideSurface ( "models/weapons/blaster/flare" );
 		viewModel->HideSurface ( "models/weapons/blaster/flare" );
+		//ActivateTeleport = 1;
 	}
 }
 
@@ -410,6 +549,7 @@ stateResult_t rvWeaponBlaster::State_Fire ( const stateParms_t& parms ) {
 			//don't fire if we're targeting a gui.
 			idPlayer* player;
 			player = gameLocal.GetLocalPlayer();
+			player->ReflectorOn(false);
 
 			//make sure the player isn't looking at a gui first
 			if( player && player->GuiActive() )	{
@@ -427,7 +567,8 @@ stateResult_t rvWeaponBlaster::State_Fire ( const stateParms_t& parms ) {
 
 	
 			if ( gameLocal.time - fireHeldTime > chargeTime ) {	
-				Attack ( true, 1, spread, 0, 1.0f );
+				//Attack ( true, 1, spread, 0, 1.0f );
+				ReflectorShield();
 				PlayEffect ( "fx_chargedflash", barrelJointView, false );
 				PlayAnim( ANIMCHANNEL_ALL, "chargedfire", parms.blendFrames );
 			} else {
@@ -465,8 +606,16 @@ stateResult_t rvWeaponBlaster::State_Flashlight ( const stateParms_t& parms ) {
 	switch ( parms.stage ) {
 		case FLASHLIGHT_INIT:			
 			SetStatus ( WP_FLASHLIGHT );
-			// Wait for the flashlight anim to play		
+			// Wait for the flashlight anim to play	
 			PlayAnim( ANIMCHANNEL_ALL, "flashlight", 0 );
+
+			// If there is no teleporter yet,
+			// allow player to make one.
+			if (MadeTeleporter) {
+				TeleporterOn();
+				MadeTeleporter = false;
+			}
+
 			return SRESULT_STAGE ( FLASHLIGHT_WAIT );
 			
 		case FLASHLIGHT_WAIT:
@@ -476,8 +625,13 @@ stateResult_t rvWeaponBlaster::State_Flashlight ( const stateParms_t& parms ) {
 			
 			if ( owner->IsFlashlightOn() ) {
 				Flashlight ( false );
+
+				// Activate the Teleporter
+				ActivateTeleport = true;
+				TeleportPlayer();
 			} else {
 				Flashlight ( true );
+				ActivateTeleport = false;
 			}
 			
 			SetState ( "Idle", 4 );

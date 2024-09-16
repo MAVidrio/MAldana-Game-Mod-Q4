@@ -196,6 +196,7 @@ class idInventory {
 public:
 	int						maxHealth;
 	int						weapons;
+	bool					reflectorEnable;		// Reflector is either on or off
 // RITUAL BEGIN
 // squirrel: Mode-agnostic buymenus
 	int						carryOverWeapons;
@@ -291,6 +292,7 @@ public:
 	bool					godmode;
 	int						godmodeDamage;
 	bool					undying;
+	bool					reflectorEnable;		// Reflector is either on or off
 
 	bool					spawnAnglesSet;		// on first usercmd, we must set deltaAngles
 	idAngles				spawnAngles;
@@ -547,6 +549,8 @@ public:
 
 	// Powerups
 	bool					GivePowerUp					( int powerup, int time, bool team = false );
+	bool					ReflectorState				( void );						// Returns true or false depending if reflector is on or off
+	void					ReflectorOn					( bool state );					// Changes reflector to true or false
 	void					ClearPowerUps				( void );
 
 	void					StartPowerUpEffect			( int powerup );

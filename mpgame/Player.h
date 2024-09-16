@@ -559,6 +559,9 @@ public:
 	void					DropWeapon					( void );
 
 	bool					WeaponIsEnabled				( void ) const { return weaponEnabled; }
+	// New ReflectorShield
+	bool					ReflectorShield				( void ) const { return reflectorEnable; }
+	//
 	void					ShowCrosshair				( void );
 	void					HideCrosshair				( void );
 
@@ -821,6 +824,7 @@ private:
 	int						previousWeapon;
 	int						weaponSwitchTime;
 	bool					weaponEnabled;
+	bool					reflectorEnable;				// New reflector shield
  	bool					showWeaponViewModel;
 
 	rvClientEntityPtr<rvClientAFAttachment>	clientHead;
